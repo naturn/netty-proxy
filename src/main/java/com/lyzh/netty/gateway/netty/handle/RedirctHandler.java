@@ -3,6 +3,8 @@ package com.lyzh.netty.gateway.netty.handle;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -79,10 +81,20 @@ public class RedirctHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        ByteBuf buf = (ByteBuf) msg;        
+        ByteBuf buf = (ByteBuf) msg;     
+        
+        Queue<ByteBuf> bufQueue = new LinkedBlockingQueue<>(outboundChannels.size());
+        for(int i = 0;i<outboundChannels.size();i++) {
+            if(bufQueue.isEmpty()) {
+                bufQueue.add(buf);
+            }else {
+                bufQueue.add(buf.copy());
+            }
+        }
+        
         outboundChannels.forEach(outboundChannel->{
             if (outboundChannel.isActive()) {
-                outboundChannel.writeAndFlush(buf.copy())
+                outboundChannel.writeAndFlush(bufQueue.poll())
                 .addListener(new ChannelFutureListener() {
 
                     @Override
