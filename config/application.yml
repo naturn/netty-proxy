@@ -1,0 +1,4 @@
+#primitive
+spring:
+  profiles:
+    active: dev

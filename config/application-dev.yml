@@ -1,0 +1,12 @@
+#dev
+
+#dev
+server:
+  port: 11302
+
+netty:
+  host: 127.0.0.1
+  proxy: 
+    - input: 127.0.0.1:1000
+      output: 127.0.0.1:1029,192.168.10.102:9051
+debug: true

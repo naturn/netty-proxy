@@ -1,0 +1,4 @@
+#Bootstrap
+spring:
+  application:
+    name:netty_gateway
