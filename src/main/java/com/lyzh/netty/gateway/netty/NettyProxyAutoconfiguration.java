@@ -45,7 +45,7 @@ public class NettyProxyAutoconfiguration {
     }
 
     private void buildNew() {
-        properties.getProxy().forEach(p -> {
+        properties.getProxy().parallelStream().forEach(p -> {
 
             String[] hostPort = p.getInput().split(":");
             SocketAddress input = new InetSocketAddress(hostPort[0], Integer.valueOf(hostPort[1]));
