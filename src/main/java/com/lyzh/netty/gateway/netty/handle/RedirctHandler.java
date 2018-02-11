@@ -15,8 +15,6 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
 /**
  * @Author Naturn
@@ -57,7 +55,7 @@ public class RedirctHandler extends ChannelInboundHandlerAdapter {
            
             ChannelFuture f = b.connect(socketAddress);
             addListener(f,inboundChannel);
-            f.channel().pipeline().addLast(new LoggingHandler(LogLevel.INFO));            
+//            f.channel().pipeline().addLast(new LoggingHandler(LogLevel.INFO));            
         });
     }
     

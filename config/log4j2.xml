@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration monitorInterval="30">
+	<Properties>
+		<Property name="filename">./logs/log_$${date:yyyy-MM-dd}.log</Property>
+		<Property name="primitive">./primitive/data_$${date:yyyy-MM-dd}.log
+		</Property>		
+		<Property name="kafka">./kafka/kafka_$${date:yyyy-MM-dd}.log
+		</Property>
+	</Properties>
+	<Appenders>
+		<Console name="STDOUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<RollingFile name="System_Log" fileName="${filename}"
+			filePattern="./logs/$${date:yyyy-MM-dd}/log_%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout>
+				<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<!-- 单个文件大小不超过50M -->
+				<SizeBasedTriggeringPolicy>
+					<size>1000M</size>
+				</SizeBasedTriggeringPolicy>
+				<!-- 每24小时对文件进行一次 -->
+				<TimeBasedTriggeringPolicy interval="12"
+					modulate="true" />
+			</Policies>
+			<!-- 日志文件保存30天超过30天江删除 -->
+			<DefaultRolloverStrategy>
+				<Delete basePath="/logs" maxDepth="1">
+					<IfFileName glob="logs_*.log"></IfFileName>
+					<IfLastModified age="30d"></IfLastModified>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="Primitive_Data" fileName="${primitive}"
+			filePattern="./primitive/$${date:yyyy-MM-dd}/data_%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout>
+				<pattern>%d %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy>
+					<size>100M</size>
+				</SizeBasedTriggeringPolicy>
+				<TimeBasedTriggeringPolicy interval="24"
+					modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="/primitive" maxDepth="1">
+					<IfFileName glob="data_*.log"></IfFileName>
+					<IfLastModified age="30d"></IfLastModified>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>	
+	</Appenders>
+	<Loggers>
+		<Root level="warn">
+			<AppenderRef ref="System_Log"></AppenderRef>
+		</Root>		
+	</Loggers>
+</configuration>
