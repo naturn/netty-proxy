@@ -36,7 +36,6 @@ public class RedirctHandler extends ChannelInboundHandlerAdapter {
     // does not need to be volatile as
     // the outboundChannel will use the same EventLoop (and therefore Thread) as
     // the inboundChannel.
-//    private Channel outboundChannel;
     
     private List<Channel> outboundChannels;
 
@@ -58,7 +57,7 @@ public class RedirctHandler extends ChannelInboundHandlerAdapter {
            
             ChannelFuture f = b.connect(socketAddress);
             addListener(f,inboundChannel);
-            f.channel().pipeline().addLast(new LoggingHandler(LogLevel.INFO));
+            f.channel().pipeline().addLast(new LoggingHandler(LogLevel.INFO));            
         });
     }
     
