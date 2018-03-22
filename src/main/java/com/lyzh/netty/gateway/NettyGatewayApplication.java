@@ -16,7 +16,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class NettyGatewayApplication {
 
     public static void main(String[] args) {
-        
         new SpringApplicationBuilder(NettyGatewayApplication.class).run(args);
     }
 }

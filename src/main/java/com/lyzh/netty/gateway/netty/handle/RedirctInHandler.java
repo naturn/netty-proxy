@@ -1,8 +1,11 @@
 package com.lyzh.netty.gateway.netty.handle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.lyzh.netty.gateway.netty.listener.BufferChannelFutureListener;
+
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -17,41 +20,35 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 
 public class RedirctInHandler extends ChannelInboundHandlerAdapter {
-    
-    private final Channel inboundChannel;
-    
-    public RedirctInHandler(Channel inboundChannel) {
-        this.inboundChannel = inboundChannel;
+
+    private static final Logger logger = LoggerFactory.getLogger(RedirctInHandler.class);
+
+    private final Channel inBoundChannel;
+
+    public RedirctInHandler(Channel inBoundChannel) {
+        this.inBoundChannel = inBoundChannel;
     }
-    
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ctx.read();
     }
-    
+
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-            
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if(future.isSuccess()) {
-                    ctx.channel().read();
-                }else {
-                    future.channel().close();
-                }
-                
-            }
-        });
+        logger.debug("{}", ctx.channel().remoteAddress());
+        inBoundChannel.writeAndFlush(msg).addListener(new BufferChannelFutureListener(ctx.channel()));
     }
-    
+
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        RedirctHandler.closeOnFlush(inboundChannel);
+    public void channelInactive(ChannelHandlerContext ctx) { 
+        logger.info("Disconnection.");
+        // RedirctHandler.closeOnFlush(inBoundChannel);
     }
-    
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();        
+        cause.printStackTrace();
     }
+
 }

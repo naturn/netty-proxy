@@ -13,6 +13,7 @@ package com.lyzh.netty.gateway.netty.bean;
 public class Proxy {
 
     private String input;
+    
     private String output;
 
     public String getInput() {

@@ -4,6 +4,13 @@
 server:
   port: 11302
 
+spring:
+  datasource:
+    url: jdbc:hsqldb:file:./db/buff.db
+    username: sa
+    password: sa
+    driverClassName: org.hsqldb.jdbcDriver
+
 netty:
   host: 127.0.0.1
   proxy: 
@@ -11,4 +18,5 @@ netty:
       output: 127.0.0.1:1029,127.0.0.1:1028
 logging:
   config: file:./config/log4j2.xml
-debug: true
+
+debug: false

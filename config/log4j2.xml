@@ -55,8 +55,8 @@
 		</RollingFile>	
 	</Appenders>
 	<Loggers>
-		<Root level="warn">
-			<AppenderRef ref="System_Log"></AppenderRef>
+		<Root level="info">
+			<AppenderRef ref="STDOUT"></AppenderRef>
 		</Root>		
 	</Loggers>
 </configuration>
