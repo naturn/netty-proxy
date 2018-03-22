@@ -88,8 +88,7 @@ public class ConnectionMonitor implements Runnable {
         channelFork.put(socketAddress, connection.channel());
         Sort sort = new Sort(Direction.DESC, "sendingTime");
         PageRequest request = new PageRequest(0, 100, sort);
-        // Page<OfflineData> result = dataRepo.findAll(Example.of(query),
-        // request);
+
         Page<OfflineData> result = dataRepo.findBySessionId(expired, request);
         logger.info("Total size {}", result.getTotalElements());
         List<Integer> ids = new ArrayList<>();

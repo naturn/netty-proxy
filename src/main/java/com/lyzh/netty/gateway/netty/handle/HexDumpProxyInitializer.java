@@ -45,7 +45,7 @@ public class HexDumpProxyInitializer extends ChannelInitializer<SocketChannel> {
         
         ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
         if(null != offlineDataRepo) {
-            ch.pipeline().addLast(new H2RedirctHandler(offlineDataRepo, statistics, outputs));
+            ch.pipeline().addLast(new CounterHandler(statistics),new H2RedirctHandler(offlineDataRepo, statistics, outputs));
         }else {
             ch.pipeline().addLast(new CounterHandler(statistics),new RedirctHandler(outputs));
         }

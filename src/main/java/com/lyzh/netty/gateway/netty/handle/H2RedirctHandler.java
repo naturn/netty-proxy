@@ -89,6 +89,7 @@ public class H2RedirctHandler extends ChannelInboundHandlerAdapter {
         channelFork.forEach((socket, channel) -> {
             closeAndFlush(channel);
         });
+        channelFork.clear();        
     }
 
     @Override
