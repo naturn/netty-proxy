@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.lyzh.netty.gateway.jmx.bean.StatisticsMBean;
+
 /**
  * @Author Naturn
  * 
@@ -17,7 +19,7 @@ import javax.persistence.Id;
  */
 
 @Entity
-public class Statistics {
+public class Statistics implements StatisticsMBean {
 
     @Id
     private int id;
@@ -81,5 +83,35 @@ public class Statistics {
     public SocketAddress getSocketAddress() {
         return socketAddress;
     }
-   
+
+    @Override
+    public AtomicLong getOnline() {
+
+        return this.online;
+    }
+
+    @Override
+    public AtomicLong getOffline() {
+
+        return this.offline;
+    }
+
+    @Override
+    public AtomicLong getTotal() {
+
+        return this.total;
+    }
+
+    @Override
+    public AtomicLong getInputStream() {
+
+        return this.inputStream;
+    }
+
+    @Override
+    public AtomicLong getOutputStream() {
+
+        return this.outputStream;
+    }
+
 }

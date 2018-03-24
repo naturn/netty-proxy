@@ -70,7 +70,8 @@ public class H2RedirctHandler extends ChannelInboundHandlerAdapter {
                     RemoteAddressConnection.connection(socketAddress, ctx, new H2RedirctOutHandler(inboundChannel)),
                     inboundChannel);
             channelFork.put(socketAddress, future.channel());
-        });
+        });        
+        //temporary Solution
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new ConnectionMonitor(ctx, channelFork, inboundChannel, offlineDataRepo), 1, 5, TimeUnit.SECONDS);
     }
 

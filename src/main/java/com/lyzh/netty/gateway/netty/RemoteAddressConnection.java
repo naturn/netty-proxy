@@ -2,7 +2,6 @@ package com.lyzh.netty.gateway.netty;
 
 import java.net.SocketAddress;
 
-import com.lyzh.netty.gateway.netty.handle.RedirctInHandler;
 import com.lyzh.netty.gateway.netty.listener.SyncChannelFutureListener;
 
 import io.netty.bootstrap.Bootstrap;
@@ -27,19 +26,11 @@ import io.netty.handler.logging.LoggingHandler;
  * @Version 0.0.1
  */
 
-public class RemoteAddressConnection {
-
-    public static ChannelFuture connection(SocketAddress remote, ChannelHandlerContext ctx) {
-        return connection(remote, ctx.channel());
-    }
+public class RemoteAddressConnection {  
 
     public static ChannelFuture connection(SocketAddress remote, ChannelHandlerContext ctx,
             ChannelInboundHandler channelHandler) {
         return connectionBuild(remote, ctx.channel(), channelHandler);
-    }
-
-    public static ChannelFuture connection(SocketAddress remote, Channel channel) {
-        return connectionBuild(remote, channel, new RedirctInHandler(channel));
     }
 
     static ChannelFuture connectionBuild(SocketAddress remote, Channel channel, ChannelInboundHandler channelHandler) {

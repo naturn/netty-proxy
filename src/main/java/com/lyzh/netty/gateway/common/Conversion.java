@@ -238,8 +238,5 @@ public final class Conversion {
 		}
 		return cc;
 	}
-//    public static void main(String[] args) {
-//        String result = "1000";
-//        System.out.println(bytesToIntForFiveFive(result.getBytes()));
-//    }
+
 }

@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import com.lyzh.netty.gateway.bean.Statistics;
+import com.lyzh.netty.gateway.jmx.NettyJMXComponent;
 import com.lyzh.netty.gateway.netty.handle.HexDumpProxyInitializer;
 import com.lyzh.netty.gateway.netty.repo.OfflineDataRepo;
 
@@ -38,19 +41,25 @@ import io.netty.handler.logging.LoggingHandler;
 @EnableConfigurationProperties(NettyPorperties.class)
 @Order
 public class NettyProxyAutoconfiguration {
-        
+
+    private static final Logger logger = LoggerFactory.getLogger(NettyProxyAutoconfiguration.class);
+
     private OfflineDataRepo offlineDataRepo;
 
     private NettyPorperties properties;
 
-    public NettyProxyAutoconfiguration(NettyPorperties properties,OfflineDataRepo offlineDataRepo) {
+    private NettyJMXComponent jmxComponent;
+
+    public NettyProxyAutoconfiguration(NettyPorperties properties, OfflineDataRepo offlineDataRepo,
+            NettyJMXComponent jmxComponent) {
         this.properties = properties;
         this.offlineDataRepo = offlineDataRepo;
+        this.jmxComponent = jmxComponent;
         buildNew();
     }
 
     private void buildNew() {
-   
+
         properties.getProxy().parallelStream().forEach(p -> {
 
             String[] hostPort = p.getInput().split(":");
@@ -66,7 +75,7 @@ public class NettyProxyAutoconfiguration {
                         }
                     }).collect(Collectors.toList());
 
-             build(input,outputs);
+            build(input, outputs);
         });
     }
 
@@ -75,20 +84,25 @@ public class NettyProxyAutoconfiguration {
         // Configure the bootstrap.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-        Statistics statistics = new Statistics(input);
+
         try {
+            Statistics statistics = new Statistics(input);
+            //JMX
+            jmxComponent.registedStatistics(statistics);
+
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)//                    
-                    .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new HexDumpProxyInitializer(outputs,offlineDataRepo,statistics))
-                    .childOption(ChannelOption.AUTO_READ, false);            
+            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)//
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new HexDumpProxyInitializer(outputs, offlineDataRepo, statistics))
+                    .childOption(ChannelOption.AUTO_READ, false);
             ChannelFuture future = b.bind(input).sync();
             // Wait until the connection is closed.
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-
+            logger.error("init faile.");
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }   
+    }
 }

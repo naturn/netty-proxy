@@ -20,8 +20,8 @@ import io.netty.channel.ChannelFutureListener;
  * @Version 0.0.1
  */
 
-public class H2DBChannelFutureListener implements ChannelFutureListener {
- 
+public class H2DBChannelFutureListener implements ChannelFutureListener { 
+    
     private OfflineDataRepo dataRepo;
 
     private final ByteBuf msg;
