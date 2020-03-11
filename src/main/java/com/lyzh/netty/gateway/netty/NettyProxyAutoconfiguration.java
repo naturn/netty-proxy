@@ -4,9 +4,11 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -91,8 +93,9 @@ public class NettyProxyAutoconfiguration {
             jmxComponent.registedStatistics(statistics);
 
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)//
+            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
+                    .handler(new IdleStateHandler(0,0,60, TimeUnit.SECONDS))
                     .childHandler(new HexDumpProxyInitializer(outputs, offlineDataRepo, statistics))
                     .childOption(ChannelOption.AUTO_READ, false);
             ChannelFuture future = b.bind(input).sync();
